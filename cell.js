@@ -1,48 +1,54 @@
-export class Cell {
-	constructor(gridElement, x, y) {
-	  const cell = document.createElement("div");
-	  cell.classList.add("cell");
-	  gridElement.append(cell);
-	  this.x = x;
-	  this.y = y;
+export class VirtualCell {
+	constructor(x, y) {
+		this.x = x
+		this.y = y
 	}
-  
+
 	linkTile(tile) {
-	  tile.setXY(this.x, this.y);
-	  this.linkedTile = tile;
+		tile.setX(this.x)
+		tile.setY(this.y)
+		this.linkedTile = tile
 	}
-  
+
 	unlinkTile() {
-	  this.linkedTile = null;
+		this.linkedTile = null
 	}
-  
-	isEmpty() {
-	  return !this.linkedTile;
+
+	hasLinkedTile() {
+		return !!this.linkedTile
 	}
-  
+
 	linkTileForMerge(tile) {
-	  tile.setXY(this.x, this.y);
-	  this.linkedTileForMerge = tile;
+		tile.setX(this.x)
+		tile.setY(this.y)
+		this.linkedTileForMerge = tile
 	}
-  
+
 	unlinkTileForMerge() {
-	  this.linkedTileForMerge = null;
+		this.linkedTileForMerge = null
 	}
-  
-	hasTileForMerge() {
-	  return !!this.linkedTileForMerge;
+
+	hasLinkedTileForMerge() {
+		return !!this.linkedTileForMerge
 	}
-  
-	canAccept(newTile) {
-	  return (
-		this.isEmpty() ||
-		(!this.hasTileForMerge() && this.linkedTile.value === newTile.value)
-	  );
+
+	canAccept(tile) {
+		return (
+			!this.hasLinkedTile() ||
+			(!this.hasLinkedTileForMerge() &&
+				this.linkedTile.value === tile.value)
+		)
 	}
-  
+
 	mergeTiles() {
-	  this.linkedTile.setValue(this.linkedTile.value + this.linkedTileForMerge.value);
-	  this.linkedTileForMerge.removeFromDOM();
-	  this.unlinkTileForMerge();
+		if (!this.hasLinkedTile() || !this.hasLinkedTileForMerge()) {
+			return
+		}
+
+		this.linkedTile.setValue(
+			this.linkedTile.value + this.linkedTileForMerge.value
+		)
+		this.linkedTileForMerge.removeFromDOM()
+		this.unlinkTileForMerge()
 	}
-  }
+}
